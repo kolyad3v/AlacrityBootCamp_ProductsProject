@@ -12,17 +12,17 @@ export interface IProduct {
 	images: string[]
 }
 
-enum SortByOptions {
-	'title',
-	'priceAsc',
-	'priceDesc',
+enum SortByOption {
+	Title = 'title',
+	PriceAsc = 'priceAsc',
+	priceDesc = 'priceDesc',
 }
 
 function App() {
-	// const SortByOptions = []
+	// const SortByOption = []
 	const [products, setProducts] = useState<IProduct[]>([])
 	const [searchTerm, setSearchTerm] = useState<string>('')
-	const [sortBy, setSortBy] = useState<SortByOptions>(SortByOptions.priceAsc)
+	const [sortBy, setSortBy] = useState<SortByOption>(SortByOption.PriceAsc)
 
 	const [productImages, setproductImages] = useState<string[]>([])
 
@@ -67,17 +67,16 @@ function App() {
 	}
 
 	const handleSort = (event: React.ChangeEvent<HTMLSelectElement>): void => {
-		setSortBy(event.target.value as unknown as SortByOptions)
+		setSortBy(event.target.value as SortByOption)
 	}
 
-	const getSortedProducts = (sortBy: SortByOptions): IProduct[] => {
-		debugger
+	const getSortedProducts = (sortBy: SortByOption): IProduct[] => {
 		return [...products].sort((productA, productB) => {
-			if (sortBy === SortByOptions.title) {
+			if (sortBy === SortByOption.Title) {
 				return productA.title.localeCompare(productB.title)
-			} else if (sortBy === SortByOptions.priceAsc) {
+			} else if (sortBy === SortByOption.PriceAsc) {
 				return productA.price - productB.price
-			} else if (sortBy === SortByOptions.priceDesc) {
+			} else if (sortBy === SortByOption.priceDesc) {
 				return productB.price - productA.price
 			} else {
 				return 0
@@ -97,67 +96,13 @@ function App() {
 		<>
 			{productImages.length > 0 &&
 				productImages.map((imageUrl) => <img src={imageUrl} />)}
-			<button
-				type='button'
-				className='btn btn-primary'
-			>
-				Primary
-			</button>
-			<button
-				type='button'
-				className='btn btn-secondary'
-			>
-				Secondary
-			</button>
-			<button
-				type='button'
-				className='btn btn-success'
-			>
-				Success
-			</button>
-			<button
-				type='button'
-				className='btn btn-danger'
-			>
-				Danger
-			</button>
-			<button
-				type='button'
-				className='btn btn-warning'
-			>
-				Warning
-			</button>
-			<button
-				type='button'
-				className='btn btn-info'
-			>
-				Info
-			</button>
-			<button
-				type='button'
-				className='btn btn-light'
-			>
-				Light
-			</button>
-			<button
-				type='button'
-				className='btn btn-dark'
-			>
-				Dark
-			</button>
 
-			<button
-				type='button'
-				className='btn btn-link'
-			>
-				Link
-			</button>
 			<select
 				name='Sort By'
 				value={sortBy}
 				onChange={handleSort}
 			>
-				{Object.keys(SortByOptions).map((option) => (
+				{Object.values(SortByOption).map((option) => (
 					<option
 						key={option}
 						value={option}
