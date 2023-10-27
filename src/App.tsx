@@ -16,6 +16,11 @@ import {
 	TextField,
 } from '@mui/material'
 import ProductCard from './ProductCard'
+import Modal from './mui/MyModal'
+import MyPopOver from './mui/MyPopOver'
+import MyBasicPopper from './mui/MyBasicPopper'
+import MySnackBar from './mui/MySnackBar'
+import ProductInFocus from './ProductInFocus'
 
 export interface IProduct {
 	id: number
@@ -37,7 +42,6 @@ function App() {
 	const [products, setProducts] = useState<IProduct[]>([])
 	const [searchTerm, setSearchTerm] = useState<string>('')
 	const [sortBy, setSortBy] = useState<SortByOption>(SortByOption.PriceAsc)
-
 	const [open, setOpen] = useState(true)
 
 	async function fetchData() {
@@ -103,56 +107,70 @@ function App() {
 
 	const sortedProduct = getSortedProducts(sortBy)
 
+	const [focusedProduct, setFocusedProduct] = useState<IProduct | null>(null)
+
 	return (
 		<>
-			<Container maxWidth='lg'>
+			<Container>
 				<Backdrop
 					sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
-					open={open}
-				>
+					open={open}>
 					<CircularProgress color='inherit' />
 				</Backdrop>
 				<Grid
 					container
-					rowSpacing={2}
+					rowSpacing={8}
 					spacing={2}
-					sx={{ my: 2 }}
-				>
+					sx={{ my: 2 }}>
 					<Grid
 						item
-						xs={6}
-					>
+						xs>
 						<Button
 							sx={{ marginRight: 2 }}
 							variant='outlined'
-							color='warning'
-						>
+							color='warning'>
 							Hello world
 						</Button>
 						<Badge
 							badgeContent={4}
-							color='primary'
-						>
+							color='primary'>
 							<ICONS.Email color='action' />
 						</Badge>
 					</Grid>
 					<Grid
 						item
-						xs={8}
-					>
+						xs>
+						<Modal />
+					</Grid>
+					<Grid
+						item
+						xs>
+						<MyPopOver />
+					</Grid>
+					<Grid
+						item
+						xs>
+						<MyBasicPopper />
+					</Grid>
+					<Grid
+						item
+						xs>
+						<MySnackBar />
+					</Grid>
+					<Grid
+						item
+						xs={8}>
 						<FormControl fullWidth>
 							<InputLabel id='demo-simple-select-label'>Sort By</InputLabel>
 							<Select
 								name='Sort By'
 								value={sortBy}
 								onChange={handleSort}
-								label='SortBy'
-							>
+								label='SortBy'>
 								{Object.values(SortByOption).map((option) => (
 									<MenuItem
 										key={option}
-										value={option}
-									>
+										value={option}>
 										{option}
 									</MenuItem>
 								))}
@@ -161,9 +179,9 @@ function App() {
 					</Grid>
 					<Grid
 						item
-						xs={6}
-					>
+						xs={4}>
 						<TextField
+							fullWidth
 							id='outlined-basic'
 							label='Search for...'
 							variant='outlined'
@@ -173,36 +191,39 @@ function App() {
 					</Grid>
 				</Grid>
 
-				<Grid
-					container
-					spacing={2}
-				>
-					{searchTerm !== ''
-						? filteredProducts.map((product) => (
-								<Grid
-									item
-									xs={6}
-									md={4}
-								>
-									<ProductCard
-										key={product.id}
-										productState={product}
-									/>
-								</Grid>
-						  ))
-						: sortedProduct.map((product) => (
-								<Grid
-									item
-									xs={6}
-									md={4}
-								>
-									<ProductCard
-										key={product.id}
-										productState={product}
-									/>
-								</Grid>
-						  ))}
-				</Grid>
+				{focusedProduct ? (
+					<ProductInFocus productState={focusedProduct} />
+				) : (
+					<Grid
+						container
+						columns={12}
+						rowSpacing={8}
+						spacing={2}>
+						{searchTerm !== ''
+							? filteredProducts.map((product) => (
+									<Grid
+										item
+										md={4}>
+										<ProductCard
+											key={product.id}
+											productState={product}
+											setFocusedProduct={setFocusedProduct}
+										/>
+									</Grid>
+							  ))
+							: sortedProduct.map((product) => (
+									<Grid
+										item
+										xs={3}>
+										<ProductCard
+											key={product.id}
+											productState={product}
+											setFocusedProduct={setFocusedProduct}
+										/>
+									</Grid>
+							  ))}
+					</Grid>
+				)}
 			</Container>
 		</>
 	)

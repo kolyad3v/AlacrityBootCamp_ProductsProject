@@ -34,9 +34,10 @@ const ExpandMore = styled((props: ExpandMoreProps) => {
 
 interface Props {
 	productState: IProduct
+	setFocusedProduct: React.Dispatch<React.SetStateAction<IProduct | null>>
 }
 
-const ProductCard: FC<Props> = ({ productState }) => {
+const ProductCard: FC<Props> = ({ productState, setFocusedProduct }) => {
 	const [expanded, setExpanded] = React.useState(false)
 	const [productImages, setproductImages] = useState<string[]>([])
 
@@ -51,7 +52,11 @@ const ProductCard: FC<Props> = ({ productState }) => {
 	}
 
 	return (
-		<Card sx={{ maxWidth: 345 }}>
+		<Card
+			sx={{ maxWidth: 345 }}
+			onClick={() => setFocusedProduct(productState)}
+			classes={{ root: 'clickable' }}
+		>
 			<CardHeader
 				avatar={
 					<Avatar
