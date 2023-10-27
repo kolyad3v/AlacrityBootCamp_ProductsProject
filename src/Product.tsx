@@ -1,5 +1,6 @@
-import { FC } from 'react'
+import { FC, useState } from 'react'
 import { IProduct } from './App'
+import { Avatar, Container } from '@mui/material'
 interface Props {
 	productState: IProduct
 	showImages: (imageArray: string[]) => void
@@ -9,7 +10,12 @@ const Product: FC<Props> = ({ productState, showImages }) => {
 
 	return (
 		<>
-			<div style={{ maxWidth: '400px' }}>
+			<Container maxWidth='sm'>
+				<Avatar
+					alt='Remy Sharp'
+					src='goodPic.jpeg'
+					sx={{ width: 128, height: 128 }}
+				/>
 				<div>Title: {title}</div>
 				<div>Price: {price}</div>
 				<div>Desc: {description}</div>
@@ -18,7 +24,7 @@ const Product: FC<Props> = ({ productState, showImages }) => {
 					src={thumbnail}
 					alt={title}
 				/>
-			</div>
+			</Container>
 		</>
 	)
 }

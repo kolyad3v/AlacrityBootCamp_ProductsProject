@@ -1,7 +1,21 @@
 import { useEffect, useState } from 'react'
-import './App.css'
 import axios from 'axios'
-import Product from './Product'
+import * as ICONS from '@mui/icons-material'
+import {
+	Backdrop,
+	Badge,
+	Button,
+	CircularProgress,
+	Container,
+	FormControl,
+	Grid,
+	InputLabel,
+	MenuItem,
+	Select,
+	SelectChangeEvent,
+	TextField,
+} from '@mui/material'
+import ProductCard from './ProductCard'
 
 export interface IProduct {
 	id: number
@@ -24,13 +38,14 @@ function App() {
 	const [searchTerm, setSearchTerm] = useState<string>('')
 	const [sortBy, setSortBy] = useState<SortByOption>(SortByOption.PriceAsc)
 
-	const [productImages, setproductImages] = useState<string[]>([])
+	const [open, setOpen] = useState(true)
 
 	async function fetchData() {
 		try {
 			const response = await axios.get('https://dummyjson.com/products?limit=50')
 			setProducts(response.data.products)
 			console.log(products)
+			setOpen(false)
 		} catch (error) {
 			console.error(error)
 		}
@@ -66,7 +81,7 @@ function App() {
 		)
 	}
 
-	const handleSort = (event: React.ChangeEvent<HTMLSelectElement>): void => {
+	const handleSort = (event: SelectChangeEvent<SortByOption>): void => {
 		setSortBy(event.target.value as SortByOption)
 	}
 
@@ -88,49 +103,107 @@ function App() {
 
 	const sortedProduct = getSortedProducts(sortBy)
 
-	const showImages = (imageStringArray: string[]) => {
-		setproductImages([...imageStringArray])
-	}
-
 	return (
 		<>
-			{productImages.length > 0 &&
-				productImages.map((imageUrl) => <img src={imageUrl} />)}
-
-			<select
-				name='Sort By'
-				value={sortBy}
-				onChange={handleSort}
-			>
-				{Object.values(SortByOption).map((option) => (
-					<option
-						key={option}
-						value={option}
+			<Container maxWidth='lg'>
+				<Backdrop
+					sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+					open={open}
+				>
+					<CircularProgress color='inherit' />
+				</Backdrop>
+				<Grid
+					container
+					rowSpacing={2}
+					spacing={2}
+					sx={{ my: 2 }}
+				>
+					<Grid
+						item
+						xs={6}
 					>
-						{option}
-					</option>
-				))}
-			</select>
-			<input
-				type='text'
-				value={searchTerm}
-				onChange={handleSearch}
-			/>
-			{searchTerm !== ''
-				? filteredProducts.map((product) => (
-						<Product
-							showImages={showImages}
-							key={product.id}
-							productState={product}
+						<Button
+							sx={{ marginRight: 2 }}
+							variant='outlined'
+							color='warning'
+						>
+							Hello world
+						</Button>
+						<Badge
+							badgeContent={4}
+							color='primary'
+						>
+							<ICONS.Email color='action' />
+						</Badge>
+					</Grid>
+					<Grid
+						item
+						xs={8}
+					>
+						<FormControl fullWidth>
+							<InputLabel id='demo-simple-select-label'>Sort By</InputLabel>
+							<Select
+								name='Sort By'
+								value={sortBy}
+								onChange={handleSort}
+								label='SortBy'
+							>
+								{Object.values(SortByOption).map((option) => (
+									<MenuItem
+										key={option}
+										value={option}
+									>
+										{option}
+									</MenuItem>
+								))}
+							</Select>
+						</FormControl>
+					</Grid>
+					<Grid
+						item
+						xs={6}
+					>
+						<TextField
+							id='outlined-basic'
+							label='Search for...'
+							variant='outlined'
+							value={searchTerm}
+							onChange={handleSearch}
 						/>
-				  ))
-				: sortedProduct.map((product) => (
-						<Product
-							showImages={showImages}
-							key={product.id}
-							productState={product}
-						/>
-				  ))}
+					</Grid>
+				</Grid>
+
+				<Grid
+					container
+					spacing={2}
+				>
+					{searchTerm !== ''
+						? filteredProducts.map((product) => (
+								<Grid
+									item
+									xs={6}
+									md={4}
+								>
+									<ProductCard
+										key={product.id}
+										productState={product}
+									/>
+								</Grid>
+						  ))
+						: sortedProduct.map((product) => (
+								<Grid
+									item
+									xs={6}
+									md={4}
+								>
+									<ProductCard
+										key={product.id}
+										productState={product}
+									/>
+								</Grid>
+						  ))}
+				</Grid>
+			</Container>
 		</>
 	)
 }
