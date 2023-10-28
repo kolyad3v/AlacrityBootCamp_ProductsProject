@@ -1,28 +1,15 @@
 import { useEffect, useState } from 'react'
 import axios from 'axios'
 import * as ICONS from '@mui/icons-material'
-import {
-	Backdrop,
-	Badge,
-	Button,
-	CircularProgress,
-	Container,
-	FormControl,
-	Grid,
-	InputLabel,
-	MenuItem,
-	Select,
-	SelectChangeEvent,
-	TextField,
-} from '@mui/material'
-import ProductCard from './ProductCard'
+import { Backdrop, Badge, Button, CircularProgress, Container, FormControl, Grid, InputLabel, MenuItem, Select, SelectChangeEvent, TextField } from '@mui/material'
+import ProductCard from './ProductComponents/ProductCard'
 import Modal from './mui/MyModal'
 import MyPopOver from './mui/MyPopOver'
 import MyBasicPopper from './mui/MyBasicPopper'
 import MySnackBar from './mui/MySnackBar'
-import ProductInFocus from './ProductInFocus'
+import ProductInFocus from './ProductComponents/ProductInFocus'
 
-export interface IProduct {
+export type IProduct = {
 	id: number
 	price: number
 	description: string
@@ -31,17 +18,24 @@ export interface IProduct {
 	images: string[]
 }
 
-enum SortByOption {
-	Title = 'title',
-	PriceAsc = 'priceAsc',
-	priceDesc = 'priceDesc',
-}
+// enum SortByOption {
+// 	Title = 'title',
+// 	PriceAsc = 'priceAsc',
+// 	PriceDesc = 'PriceDesc',
+// }
 
 function App() {
-	// const SortByOption = []
+	const SortByOption = { Title: 'title', PriceAsc: 'priceAsc', PriceDesc: 'priceDesc' } as const
+	const isSortByOption = (value: any): boolean => {
+		return Object.values(SortByOption).includes(value)
+	}
+
+	type SortByOptionKeys = keyof typeof SortByOption
+	type SortByOptionValues = (typeof SortByOption)[SortByOptionKeys]
+
 	const [products, setProducts] = useState<IProduct[]>([])
 	const [searchTerm, setSearchTerm] = useState<string>('')
-	const [sortBy, setSortBy] = useState<SortByOption>(SortByOption.PriceAsc)
+	const [sortBy, setSortBy] = useState<SortByOptionValues>(SortByOption.PriceAsc)
 	const [open, setOpen] = useState(true)
 
 	async function fetchData() {
@@ -79,23 +73,21 @@ function App() {
 
 	const getFilteredProducts = (searchTerm: string): IProduct[] => {
 		if (searchTerm === '') return products
-		return products.filter(
-			(product) =>
-				product.title.toLowerCase().indexOf(searchTerm.toLowerCase()) !== -1
-		)
+		return products.filter((product) => product.title.toLowerCase().indexOf(searchTerm.toLowerCase()) !== -1)
 	}
 
-	const handleSort = (event: SelectChangeEvent<SortByOption>): void => {
-		setSortBy(event.target.value as SortByOption)
+	const handleSort = (event: SelectChangeEvent<SortByOptionValues>): void => {
+		if (!isSortByOption(event.target.value)) return
+		setSortBy(event.target.value as SortByOptionValues)
 	}
 
-	const getSortedProducts = (sortBy: SortByOption): IProduct[] => {
+	const getSortedProducts = (sortBy: SortByOptionValues): IProduct[] => {
 		return [...products].sort((productA, productB) => {
 			if (sortBy === SortByOption.Title) {
 				return productA.title.localeCompare(productB.title)
 			} else if (sortBy === SortByOption.PriceAsc) {
 				return productA.price - productB.price
-			} else if (sortBy === SortByOption.priceDesc) {
+			} else if (sortBy === SortByOption.PriceDesc) {
 				return productB.price - productA.price
 			} else {
 				return 0
@@ -192,7 +184,10 @@ function App() {
 				</Grid>
 
 				{focusedProduct ? (
-					<ProductInFocus productState={focusedProduct} />
+					<ProductInFocus
+						setFocusedProduct={setFocusedProduct}
+						productState={focusedProduct}
+					/>
 				) : (
 					<Grid
 						container

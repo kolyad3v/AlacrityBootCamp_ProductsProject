@@ -1,5 +1,5 @@
 import { FC, useState } from 'react'
-import { IProduct } from './App'
+import { IProduct } from '../App'
 import { Avatar, Container } from '@mui/material'
 interface Props {
 	productState: IProduct

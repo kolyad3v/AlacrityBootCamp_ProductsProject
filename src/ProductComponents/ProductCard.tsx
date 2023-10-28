@@ -13,7 +13,7 @@ import FavoriteIcon from '@mui/icons-material/Favorite'
 import ShareIcon from '@mui/icons-material/Share'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import MoreVertIcon from '@mui/icons-material/MoreVert'
-import { IProduct } from './App'
+import { IProduct } from '../App'
 import { FC, useState } from 'react'
 import { ImageList, ImageListItem } from '@mui/material'
 
@@ -55,8 +55,7 @@ const ProductCard: FC<Props> = ({ productState, setFocusedProduct }) => {
 		<Card
 			sx={{ maxWidth: 345 }}
 			onClick={() => setFocusedProduct(productState)}
-			classes={{ root: 'clickable' }}
-		>
+			classes={{ root: 'clickable' }}>
 			<CardHeader
 				avatar={
 					<Avatar
@@ -83,8 +82,7 @@ const ProductCard: FC<Props> = ({ productState, setFocusedProduct }) => {
 			<CardContent>
 				<Typography
 					variant='body2'
-					color='text.secondary'
-				>
+					color='text.secondary'>
 					{description}
 				</Typography>
 			</CardContent>
@@ -99,24 +97,21 @@ const ProductCard: FC<Props> = ({ productState, setFocusedProduct }) => {
 					expand={expanded}
 					onClick={handleExpandClick}
 					aria-expanded={expanded}
-					aria-label='show more'
-				>
+					aria-label='show more'>
 					<ExpandMoreIcon />
 				</ExpandMore>
 			</CardActions>
 			<Collapse
 				in={expanded}
 				timeout='auto'
-				unmountOnExit
-			>
+				unmountOnExit>
 				<CardContent>
 					{/* {productImages.length > 0 &&
 						productImages.map((imageUrl) => <img src={imageUrl} />)} */}
 					<ImageList
 						sx={{ width: 500, height: 450 }}
 						cols={3}
-						rowHeight={164}
-					>
+						rowHeight={164}>
 						<Avatar
 							alt='Remy Sharp'
 							src='goodPic.jpeg'
